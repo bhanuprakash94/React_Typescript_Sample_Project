@@ -1,0 +1,109 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #458bba;
+}
+
+.controls {
+  justify-content: space-between;
+  margin-bottom: 20px;
+  float: right;
+  position: relative;
+  top: 0px;
+}
+
+.controls input {
+  flex: 1;
+  margin-right: 10px;
+  padding: 8px;
+}
+
+.controls button,
+.container td button,
+.empty_message button {
+  flex: 1;
+  margin-right: 10px;
+  padding: 8px;
+  display: inline-block;
+  padding: 0 15px 0 12px;
+  height: 34px;
+  background: #fff;
+  font-size: 14px;
+  font-family: "OpenSans-bold", Arial, sans-serif;
+  color: #458bba;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  text-transform: uppercase;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}
+
+.container td button.delete {
+  color: red;
+  background-color: white;
+}
+
+.container td button.delete:hover {
+  color: #fff;
+  background-color: red;
+}
+
+.controls button:hover,
+.container td button:hover,
+.empty_message button:hover {
+  background: #458bba;
+  color: #fff;
+}
+
+.container .empty_message_wrap {
+  height: 73vh;
+  width: 100%;
+  color: gray;
+  display: flex;
+  justify-content: center;
+}
+
+.container .empty_message_wrap .empty_message {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  margin: 40vh 40vh 40vh 40vh;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+table td.norecord {
+  text-align: center;
+}
+
+table th {
+  background: #fff;
+  color: #458bba;
+  text-align: left;
+  font-family: "OpenSans-Semi", Arial, sans-serif;
+  padding: 12px;
+}
+
+table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
