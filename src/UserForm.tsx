@@ -70,19 +70,19 @@ const UserForm: React.FC<UserFormProps> = ({
     const newErrors: { [key in keyof UserInterface]?: string } = {};
 
     const validationFields = name
-      ? fields.filter((field) => field.name === name)
+      ? fields.filter((field) => field.field_name === name)
       : fields;
 
     validationFields.forEach((field) => {
-      const value = data[field.name];
+      const value = data[field.field_name];
       if (field.required && (value === "" || value === undefined)) {
         newErrors[
-          field.name as keyof UserInterface
+          field.field_name as keyof UserInterface
         ] = `${field.display_name} is required.`;
-      } else if (field.name === "email") {
+      } else if (field.field_name === "email") {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (value && !emailRegex.test(value as string)) {
-          newErrors[field.name as keyof UserInterface] =
+          newErrors[field.field_name as keyof UserInterface] =
             "Please enter a valid email address.";
         }
       }
@@ -98,21 +98,21 @@ const UserForm: React.FC<UserFormProps> = ({
         <div>
           {fields.map((field) => (
             <div
-              key={field.name}
-              className={field.name === "id" ? "field_hide" : ""}
+              key={field.field_name}
+              className={field.field_name === "id" ? "field_hide" : ""}
             >
-              <label htmlFor={field.name}>{field.display_name}:</label>
+              <label htmlFor={field.field_name}>{field.display_name}:</label>
               <input
                 type={field.type}
-                name={field.name}
+                name={field.field_name}
                 placeholder={field.display_name}
-                value={(formData[field.name] ?? "") as string}
+                value={(formData[field.field_name] ?? "") as string}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              {errors[field.name as keyof UserInterface] && (
+              {errors[field.field_name as keyof UserInterface] && (
                 <span className="error">
-                  {errors[field.name as keyof UserInterface]}
+                  {errors[field.field_name as keyof UserInterface]}
                 </span>
               )}
             </div>
