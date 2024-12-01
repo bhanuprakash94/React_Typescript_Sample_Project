@@ -4,26 +4,36 @@ import "./App.css";
 import { Userschema, UserInterface } from "./types";
 
 const userFields: Userschema[] = [
-  { name: "id", display_name: "User Id", type: "number", required: false },
   {
-    name: "first_name",
+    field_name: "id",
+    display_name: "User Id",
+    type: "number",
+    required: false,
+  },
+  {
+    field_name: "first_name",
     display_name: "First Name",
     type: "string",
     required: false,
   },
   {
-    name: "last_name",
+    field_name: "last_name",
     display_name: "Last Name",
     type: "string",
     required: false,
   },
   {
-    name: "name",
+    field_name: "name",
     display_name: "Name",
     type: "string",
     required: true,
   },
-  { name: "email", display_name: "Email", type: "string", required: true },
+  {
+    field_name: "email",
+    display_name: "Email",
+    type: "string",
+    required: true,
+  },
 ];
 
 const App: React.FC = () => {
@@ -40,13 +50,13 @@ const App: React.FC = () => {
   const filteredUsers = users.filter((user) => {
     const lowerSearchQuery = searchQuery.toLowerCase();
     return userFields.some((field) =>
-      String(user[field.name] ?? "")
+      String(user[field.field_name] ?? "")
         .toLowerCase()
         .includes(lowerSearchQuery)
     );
   });
 
-  const sortUsers = (column: string) => {
+  const sortUsers = (column: keyof UserInterface) => {
     const newSortOrder =
       sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
     setSortColumn(column);
@@ -117,9 +127,12 @@ const App: React.FC = () => {
               <thead>
                 <tr>
                   {userFields.map((field) => (
-                    <th key={field.name} onClick={() => sortUsers(field.name)}>
+                    <th
+                      key={field.field_name}
+                      onClick={() => sortUsers(field.field_name)}
+                    >
                       {field.display_name}{" "}
-                      {sortColumn === field.name
+                      {sortColumn === field.field_name
                         ? sortOrder === "asc"
                           ? "▲"
                           : "▼"
@@ -134,8 +147,8 @@ const App: React.FC = () => {
                   filteredUsers.map((user) => (
                     <tr key={user.id}>
                       {userFields.map((field) => (
-                        <td key={field.name}>
-                          {String(user[field.name] ?? "")}
+                        <td key={field.field_name}>
+                          {String(user[field.field_name] ?? "")}
                         </td>
                       ))}
                       <td>
