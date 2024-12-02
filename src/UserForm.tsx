@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Userschema, UserInterface } from "./types";
 import "./UserForm.css";
 
 interface UserFormProps {
-  fields: Userschema[];
-  user: Partial<UserInterface> | null;
+  fields: Userschema<UserInterface>[];
+  user: UserInterface;
   onSave: (user: UserInterface) => void;
   onCancel: () => void;
 }
@@ -15,18 +15,10 @@ const UserForm: React.FC<UserFormProps> = ({
   onSave,
   onCancel,
 }) => {
-  const [formData, setFormData] = useState<Partial<UserInterface>>({});
+  const [formData, setFormData] = useState<UserInterface>(user);
   const [errors, setErrors] = useState<{
     [key in keyof UserInterface]?: string;
   }>({});
-
-  useEffect(() => {
-    if (user) {
-      setFormData({ ...user });
-    } else {
-      setFormData({});
-    }
-  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,7 +41,6 @@ const UserForm: React.FC<UserFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const newErrors = validate(formData);
 
     if (Object.keys(newErrors).length > 0) {
@@ -59,12 +50,12 @@ const UserForm: React.FC<UserFormProps> = ({
 
     onSave({
       ...formData,
-      id: user?.id ?? Math.floor(Math.random() * 10000),
+      id: user.id !== 0 ? user.id : Math.floor(Math.random() * 10000),
     } as UserInterface);
   };
 
   const validate = (
-    data: Partial<UserInterface>,
+    data: UserInterface,
     name: keyof UserInterface | null = null
   ) => {
     const newErrors: { [key in keyof UserInterface]?: string } = {};
@@ -93,32 +84,32 @@ const UserForm: React.FC<UserFormProps> = ({
 
   return (
     <div className="form">
-      <h2>{user?.id ? "Edit User" : "Add User"}</h2>
+      <h2>{user.id ? "Edit User" : "Add User"}</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          {fields.map((field) => (
-            <div
-              key={field.field_name}
-              className={field.field_name === "id" ? "field_hide" : ""}
-            >
-              <label htmlFor={field.field_name}>{field.display_name}:</label>
-              <input
-                type={field.type}
-                name={field.field_name}
-                placeholder={field.display_name}
-                value={(formData[field.field_name] ?? "") as string}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors[field.field_name as keyof UserInterface] && (
-                <span className="error">
-                  {errors[field.field_name as keyof UserInterface]}
-                </span>
-              )}
-            </div>
-          ))}
+          {fields.map((field) => {
+            if (field.field_name === "id") return null;
+            return (
+              <div key={field.field_name}>
+                <label htmlFor={field.field_name}>{field.display_name}:</label>
+                <input
+                  type={field.type}
+                  name={field.field_name}
+                  placeholder={field.display_name}
+                  value={(formData[field.field_name] ?? "") as string}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors[field.field_name as keyof UserInterface] && (
+                  <span className="error">
+                    {errors[field.field_name as keyof UserInterface]}
+                  </span>
+                )}
+              </div>
+            );
+          })}
           <div className="buttons">
-            <button type="submit">{user?.id ? "Update" : "Add"} User</button>
+            <button type="submit">{user.id ? "Update" : "Add"} User</button>
             <button type="button" className="cancel" onClick={onCancel}>
               Cancel
             </button>

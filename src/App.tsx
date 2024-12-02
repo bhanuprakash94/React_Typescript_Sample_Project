@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import UserForm from "./UserForm";
 import "./App.css";
 import { Userschema, UserInterface } from "./types";
 
-const userFields: Userschema[] = [
+const defaultUserRecord = (): UserInterface => ({
+  id: 0,
+  first_name: "",
+  last_name: "",
+  name: "",
+  email: "",
+});
+
+const userFields: Userschema<UserInterface>[] = [
   {
     field_name: "id",
     display_name: "User Id",
@@ -33,61 +41,70 @@ const userFields: Userschema[] = [
     display_name: "Email",
     type: "string",
     required: true,
-  },
+  }
 ];
 
 const App: React.FC = () => {
-  const [view, setViewType] = useState<string>("list");
+  const [view, setViewType] = useState<"list" | "add" | "edit">("list");
   const [users, setUsers] = useState<UserInterface[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortColumn, setSortColumn] = useState<string>("id");
+  const [sortColumn, setSortColumn] = useState<keyof UserInterface>("id");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [editingUser, setEditingUser] = useState<UserInterface | null>(null);
+  const [editingUser, setEditingUser] =
+    useState<UserInterface>(defaultUserRecord);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchQuery(e.target.value);
 
-  const filteredUsers = users.filter((user) => {
-    const lowerSearchQuery = searchQuery.toLowerCase();
-    return userFields.some((field) =>
-      String(user[field.field_name] ?? "")
-        .toLowerCase()
-        .includes(lowerSearchQuery)
-    );
-  });
-
-  const sortUsers = (column: keyof UserInterface) => {
+  const handleSort = (column: keyof UserInterface) => {
     const newSortOrder =
       sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
     setSortColumn(column);
     setSortOrder(newSortOrder);
+  };
 
+  const filteredUsers = useMemo(() => {
+    // Sorting
     const sortedUsers = [...users].sort((a, b) => {
-      const valueA = a[column];
-      const valueB = b[column];
+      const valueA = a[sortColumn];
+      const valueB = b[sortColumn];
+
       if (typeof valueA === "string" && typeof valueB === "string") {
-        return newSortOrder === "asc"
+        return sortOrder === "asc"
           ? valueA.localeCompare(valueB)
           : valueB.localeCompare(valueA);
       }
       if (typeof valueA === "number" && typeof valueB === "number") {
-        return newSortOrder === "asc" ? valueA - valueB : valueB - valueA;
+        return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
       }
       return 0;
     });
 
-    setUsers(sortedUsers);
-  };
+    // Filtering
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    const filtered = sortedUsers.filter((user) =>
+      userFields.some((field) =>
+        String(user[field.field_name] ?? "")
+          .toLowerCase()
+          .includes(lowerSearchQuery)
+      )
+    );
+
+    return filtered;
+  }, [users, searchQuery, sortColumn, sortOrder]);
 
   const handleSave = (user: UserInterface) => {
-    if (editingUser) {
-      setUsers((prevUsers) =>
-        prevUsers.map((u) => (u.id === user.id ? user : u))
-      );
-    } else {
-      setUsers((prevUsers) => [...prevUsers, { ...user, id: Date.now() }]);
-    }
-    setEditingUser(null);
+    setUsers((prevUsers) => {
+      const existingUserIndex = prevUsers.findIndex((u) => u.id === user.id);
+
+      if (existingUserIndex === -1) {
+        return [...prevUsers, user];
+      } else {
+        return prevUsers.map((u) => (u.id === user.id ? user : u));
+      }
+    });
+
+    setEditingUser(defaultUserRecord());
     setViewType("list");
   };
 
@@ -129,7 +146,7 @@ const App: React.FC = () => {
                   {userFields.map((field) => (
                     <th
                       key={field.field_name}
-                      onClick={() => sortUsers(field.field_name)}
+                      onClick={() => handleSort(field.field_name)}
                     >
                       {field.display_name}{" "}
                       {sortColumn === field.field_name

@@ -6,8 +6,8 @@ export interface UserInterface {
   email: string;
 }
 
-export interface Userschema {
-  field_name: keyof UserInterface;
+export interface Userschema<T> {
+  field_name: keyof T;
   display_name: string;
   type: string;
   required: boolean;
