@@ -60,3 +60,13 @@
     color: #fff;
   }
   
+  @media (max-width: 768px) {
+    .controls {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .controls input {
+      width: 100%;
+    }
+  }

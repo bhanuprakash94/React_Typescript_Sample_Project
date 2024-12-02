@@ -59,7 +59,7 @@
     background: #458bba;
     color: #fff;
   }
-  
+ 
   table {
     width: 100%;
     border-collapse: collapse;
@@ -168,15 +168,6 @@
   }
   
   @media (max-width: 768px) {
-    .controls {
-      flex-direction: column;
-      gap: 15px;
-    }
-  
-    .controls input {
-      width: 100%;
-    }
-  
     table th,
     table td {
       font-size: 12px;
