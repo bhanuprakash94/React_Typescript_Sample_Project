@@ -6,9 +6,8 @@ export interface UserInterface {
   email: string;
 }
 
-// Extend the schema to allow "actions" as a valid field name
 export type Userschema<T> = {
-  field_name: keyof T | "actions"; // Allow "actions" as a valid field name
+  field_name: keyof T | "actions"; 
   display_name: string;
   type: string;
   required: boolean;
@@ -22,7 +21,7 @@ export type Userschema<T> = {
 export interface ListComponentProps<T extends { id: number }> {
   data: T[];
   fields: Array<{
-    field_name: keyof T | "actions"; // Allow "actions" as a valid field
+    field_name: keyof T | "actions";
     display_name: string;
     type: string;
     required: boolean;
