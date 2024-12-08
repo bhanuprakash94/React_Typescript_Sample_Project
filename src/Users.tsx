@@ -3,6 +3,9 @@ import CustomForm from "./Components/Form";
 import ListComponent from "./Components/ListComponent";
 import { Userschema, UserInterface } from "./types";
 import "./Users.css";
+import { Button } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const defaultDataRecord = (): UserInterface => ({
   id: 0,
@@ -56,12 +59,12 @@ const fields: Userschema<UserInterface>[] = [
       handleDelete: (id: number) => void
     ) => (
       <>
-        <button className="edit" onClick={() => handleEdit(data)}>
+        <Button variant="contained" endIcon={<EditIcon />} sx={{color:'blue',bgColor:"white"}} className="edit" onClick={() => handleEdit(data)}>
           Edit
-        </button>
-        <button className="delete" onClick={() => handleDelete(data.id)}>
+        </Button>
+        <Button variant="contained" color="error" startIcon={<DeleteIcon />} className="delete" onClick={() => handleDelete(data.id)}>
           Delete
-        </button>
+        </Button>
       </>
     ),
   },
@@ -136,7 +139,12 @@ const Users: React.FC = () => {
     setData((prevData) => prevData.filter((data) => data.id !== id));
   };
 
-  const addButton = <button onClick={() => setViewType("add")}> + Add User</button>;
+  const addButton = <Button variant="outlined" sx={{
+    '&:hover': {
+      color: 'white',
+      bgColor:"blue"
+    },
+  }} onClick={() => setViewType("add")}> + Add User</Button>;
 
   return (
     <div className="container">
